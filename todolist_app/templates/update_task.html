@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{%block content %}
+<div class="container">
+</br>
+    {% if task.owner == request.user %}
+    <form method="POST" class="row">
+        <div class="input-group mb3">
+            {% csrf_token %}
+            <label 
+                class="col-sm-2 col-form-label" 
+                for="input-update-task">
+            </label>
+            <input 
+                type="text" 
+                name="task"
+                id="input-update-task"
+                class="form-control" 
+                placeholder="{{ task.task }}"
+                value="{{ task.task }}"
+                aria-describedby="submit-btn-update-task"
+            >
+            <input 
+                type="hidden" 
+                name="done"
+                value="{{ task.done }}"
+            >
+            <button 
+                type="submit" 
+                class="btn btn-secondary"
+                id="submit-btn-update-task"
+            >Update Task
+            </button>
+        </div>
+    </form>
+    {% else %}
+        <p>Unauthorized</p>
+    {% endif %}
+</div>
+{% endblock content%}

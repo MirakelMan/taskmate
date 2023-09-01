@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{%block content %}
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">            
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    <form method="POST" class="row mt-5">
+        <div class="input-group mb3">
+            {% csrf_token %}
+            <label 
+                class="col-sm-2 col-form-label" 
+                for="input-new-task">PLCHLDR
+            </label>
+            <input 
+                type="text" 
+                name="task"
+                id="input-new-task"
+                class="form-control" 
+                placeholder="Enter new task with a maximum of 300 chars."
+                aria-describedby="submit-btn-new-task"
+            >
+            <button 
+                type="submit" 
+                class="btn btn-secondary"
+                id="submit-btn-new-task"
+            >Add Task
+            </button>
+        </div>
+    </form>
+    
+    </br>
+    <table class="table table-dark table-bordered text-center mt-5">
+        <thead>
+            <tr class="row">
+                <th class="col-1">#</th>
+                <th class="col-8">Task</th>
+                <th class="col-1">Done?</th>
+                <th class="col-1">Edit</th>
+                <th class="col-1">Delete</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        {% if tasks %}
+            {% for task in tasks %}
+                {% if task.done %}
+                    <tr class="table-success row">
+                        <th class="col-1">{{ task.id }}.</th>
+                        <td class="col-8"><del>{{ task.task }}</del></td>
+                        <td class="col-1">
+                            <a 
+                                href="{% url 'toggle_done_task_from_todo_list' task.id %}"
+                                class="form-check form-switch"                            
+                                role="switch"
+                                id="doneSwitch">
+                                    <input class="form-check-input"
+                                    type="checkbox"
+                                    value="no"
+                                    checked>                                                              
+                            </a>
+                        </td>
+                        <td class="col-1">
+                            <a 
+                                href="{% url 'update_task_from_todo_list' task.id %}"
+                                ><button type="button" class="btn btn-warning">Edit</button>
+
+                            </a>
+                        </td>
+                        <td class="col-1">
+                            <a 
+                                href="{% url 'delete_task_from_todo_list' task.id %}"
+                                ><button type="button" class="btn btn-danger">Delete</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr class="table-warning row">
+                        <th class="col-1">{{ task.id }}.</th>
+                        <td class="col-8">{{ task.task }}</td>
+                        <td class="col-1">
+                            <a 
+                                href="{% url 'toggle_done_task_from_todo_list' task.id %}"
+                                class="form-check form-switch"                            
+                                role="switch"
+                                id="doneSwitch"
+                            >
+                                <input class="form-check-input"
+                                 type="checkbox"
+                                 value="no">                                                        
+                            </a>
+                        </td>
+                        <td class="col-1">
+                            <a 
+                                href="{% url 'update_task_from_todo_list' task.id %}"
+                                ><button type="button" class="btn btn-warning">Edit</button>
+                            </a>
+                        </td>
+                        <td class="col-1">
+                            <a 
+                                href="{% url 'delete_task_from_todo_list' task.id %}"
+                                ><button type="button" class="btn btn-danger">Delete</button>
+                                
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end">
+          <li class="page-item"><a class="page-link" href="?page=1"><<</a></li>
+            {% if tasks.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ tasks.previous_page_number }}">{{ tasks.previous_page_number}}</a></li>
+            {% endif %}
+          <li class="page-item"><a class="page-link" href="?page={{ tasks.number }}">{{ tasks.number }}</a></li>
+            {% if tasks.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ tasks.next_page_number }}">{{ tasks.next_page_number}}</a></li>
+            {% endif %}
+          <li class="page-item"><a class="page-link" href="?page={{ tasks.paginator.num_pages }}">>></a></li>
+        </ul>
+      </nav>
+    
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" 
+        crossorigin="anonymous">
+    </script>
+</div>
+{% endblock content%}
